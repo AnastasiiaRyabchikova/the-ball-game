@@ -1,0 +1,59 @@
+:root {
+    --gray: #505050;
+    --green: #006100;
+    --ball-size: 50px;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    height: 100%;
+}
+
+header {
+    padding-top: 2rem;
+    margin-bottom: 3rem;
+}
+
+h1 {
+    font-family: "Press Start 2P";
+    font-size: 3rem;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.game-field { 
+    border: 10px solid var(--gray);
+    width: 80%;
+    margin: 0 auto;
+    height: 60vh;
+    position: relative;
+    background-image: linear-gradient(to bottom, #fff, #fff 70%, var(--green) 70%, var(--green));
+    overflow: hidden;
+}
+
+.ball {
+    background-color: #ff0000;
+    top: calc(70% - var(--ball-size));
+    left: calc(50% - var(--ball-size) / 2);
+    height: var(--ball-size);
+    width: var(--ball-size);
+    border-radius: 50%;
+    position: absolute;
+}
+
+.box {
+    background-color: #e4bf58;
+    top: calc(70% - var(--ball-size));
+    height: var(--ball-size);
+    width: var(--ball-size);
+    position: absolute;
+}
