@@ -31,6 +31,12 @@ function initBoxAnimation(box) {
         if ( time > animationStart + 2 ) {
             let x = parseInt(box.style.left) - 1;
             box.style.left = `${x}px`;
+            if (x < gameFieldSizes.width/2 + ballSizes.width/2 && x > gameFieldSizes.width/2 - ballSizes.width/2 - box.clientWidth) {
+                box.style.background = "orange";
+                console.log('111');
+            } else {
+                box.style.background = "";
+            }
             if (x <= -50) {
                 cancelAnimationFrame(requestId);
                 box.remove();
