@@ -1,5 +1,5 @@
-const gameField = document.querySelector('.game-field');
-const gameFieldSizes = {width: gameField.clientWidth, height: gameField.clientHeight};
+const field = document.querySelector('.game-field');
+const fieldSizes = {width: field.clientWidth, height: field.clientHeight};
 
 class Ball {
     constructor(elem) {
@@ -20,7 +20,7 @@ class Ball {
 
 const ball = new Ball(document.querySelector('.ball'));
 
-ball.top = gameFieldSizes.height * 0.7 - ball.height;
+ball.top = fieldSizes.height * 0.7 - ball.height;
 
 const boxTemplate = document.createElement('div');
 boxTemplate.classList.add('box');
@@ -28,8 +28,8 @@ boxTemplate.classList.add('box');
 
 function initBox() {
     const box = boxTemplate.cloneNode();
-    box.style.left = `${gameFieldSizes.width}px` ;
-    gameField.appendChild(box);
+    box.style.left = `${fieldSizes.width}px` ;
+    field.appendChild(box);
     initBoxAnimation(box);
 }
 
@@ -43,7 +43,7 @@ function initBoxAnimation(box) {
         if ( time > animationStart + 2 ) {
             let x = parseInt(box.style.left) - 1;
             box.style.left = `${x}px`;
-            if (x < gameFieldSizes.width/2 + ball.width/2 && x > gameFieldSizes.width/2 - ball.width/2 - box.clientWidth) {
+            if (x < fieldSizes.width/2 + ball.width/2 && x > fieldSizes.width/2 - ball.width/2 - box.clientWidth) {
                 box.style.background = "orange";
             } else {
                 box.style.background = "";
@@ -82,7 +82,7 @@ document.addEventListener('keydown', function(evt) {
         ball.top = top - ball.height * 3;
         ball.elem.addEventListener('transitionend', function(evt) {
             ball.elem.style.transition = 'top 1.1s cubic-bezier(.65,.04,.79,.57)';
-            ball.top = gameFieldSizes.height * 0.7 - ball.height;
+            ball.top = fieldSizes.height * 0.7 - ball.height;
         });
     }
 });
