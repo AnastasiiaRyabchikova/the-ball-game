@@ -1,13 +1,26 @@
 const gameField = document.querySelector('.game-field');
 const gameFieldSizes = {width: gameField.clientWidth, height: gameField.clientHeight};
 
+class Ball {
+    constructor(elem) {
+        this.elem = elem;
+        this.width = elem.clientWidth
+        this.height = elem.clientHeight
+        
+    }
+    set top(value) {
+        this.elem.style.top = `${value}px`;
+        this._top = value;
+    }
 
-console.log(gameFieldSizes);
-const ball = document.querySelector('.ball');
-ballSizes = {width: ball.clientWidth, height: ball.clientHeight};
+    get top() {
+        return this._top;
+    }
+}
 
-console.log(ball);
-ball.style.top = `${gameFieldSizes.height * 0.7 - ballSizes.height}px`;
+const ball = new Ball(document.querySelector('.ball'));
+
+ball.top = gameFieldSizes.height * 0.7 - ball.height;
 
 const boxTemplate = document.createElement('div');
 boxTemplate.classList.add('box');
@@ -20,7 +33,6 @@ function initBox() {
     initBoxAnimation(box);
 }
 
-
 function getRandom(min, max) {
     return Math.floor(Math.random() * (max-min) + min);
 }
@@ -31,9 +43,8 @@ function initBoxAnimation(box) {
         if ( time > animationStart + 2 ) {
             let x = parseInt(box.style.left) - 1;
             box.style.left = `${x}px`;
-            if (x < gameFieldSizes.width/2 + ballSizes.width/2 && x > gameFieldSizes.width/2 - ballSizes.width/2 - box.clientWidth) {
+            if (x < gameFieldSizes.width/2 + ball.width/2 && x > gameFieldSizes.width/2 - ball.width/2 - box.clientWidth) {
                 box.style.background = "orange";
-                console.log('111');
             } else {
                 box.style.background = "";
             }
@@ -66,15 +77,12 @@ function initAppearingBoxes() {
 
 document.addEventListener('keydown', function(evt) {
     if (evt.keyCode === 38) {
-        console.log('1111');
-        let top = parseInt(ball.style.top);
-        console.log(top);
-        ball.style.transition = 'top 1.1s cubic-bezier(.18,.48,.33,1.01)';
-        ball.style.top = `${top - ballSizes.height * 3}px`;
-        ball.addEventListener('transitionend', function(evt) {
-            console.log(evt);
-            ball.style.transition = 'top 1.1s cubic-bezier(.65,.04,.79,.57)';
-            evt.target.style.top = `${gameFieldSizes.height * 0.7 - ballSizes.height}px`;
+        let top = parseInt(ball.top);
+        ball.elem.style.transition = 'top 1.1s cubic-bezier(.18,.48,.33,1.01)';
+        ball.top = top - ball.height * 3;
+        ball.elem.addEventListener('transitionend', function(evt) {
+            ball.elem.style.transition = 'top 1.1s cubic-bezier(.65,.04,.79,.57)';
+            ball.top = gameFieldSizes.height * 0.7 - ball.height;
         });
     }
 });
