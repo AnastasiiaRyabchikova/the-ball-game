@@ -4,9 +4,8 @@ const fieldSizes = {width: field.clientWidth, height: field.clientHeight};
 class Ball {
     constructor(elem) {
         this.elem = elem;
-        this.width = elem.clientWidth
-        this.height = elem.clientHeight
-        
+        this.width = elem.clientWidth;
+        this.height = elem.clientHeight;
     }
     set top(value) {
         this.elem.style.top = `${value}px`;
@@ -18,60 +17,90 @@ class Ball {
     }
 }
 
+class Box {
+    constructor() {
+        this.elem = this.getElem();
+        this.left = fieldSizes.width;
+        field.appendChild(this.elem);
+        this.initBoxAnimation();
+        this.width = this.elem.clientWidth;
+        this.height = this.elem.clientHeight;
+    }
+
+    getElem() {
+        const box = document.createElement('div');
+        box.classList.add('box');
+        return box;
+    }
+
+    initBoxAnimation() {
+        let animationStart = performance.now();
+
+        const animate = (time) => {
+            if ( time > animationStart + 2 ) {
+                let x = this.left - 1;
+                console.log(validate(x, this));
+                if ( validate(x, this) ) {
+                    this.elem.style.background = "orange";
+                    cancelAnimationFrame(this.requestId);
+                    gameOver();
+                    return
+                } else {
+                    this.elem.style.background = "";
+                }
+
+                this.left = x;
+
+                if (x <= -50) {
+                    cancelAnimationFrame(this.requestId);
+                    boxes.shift();
+                    return;
+                }
+                animationStart = time;
+            }   
+            this.requestId = requestAnimationFrame(animate);
+
+        }
+
+        this.requestId = requestAnimationFrame(animate);
+    }
+
+    set left(value) {
+        this.elem.style.left = `${value}px`;
+        this._left = value;
+    }
+
+    get left() {
+        return this._left;
+    }
+}
+
 const ball = new Ball(document.querySelector('.ball'));
 
+
 ball.top = fieldSizes.height * 0.7 - ball.height;
-
-const boxTemplate = document.createElement('div');
-boxTemplate.classList.add('box');
-
-
-function initBox() {
-    const box = boxTemplate.cloneNode();
-    box.style.left = `${fieldSizes.width}px` ;
-    field.appendChild(box);
-    initBoxAnimation(box);
-}
 
 function getRandom(min, max) {
     return Math.floor(Math.random() * (max-min) + min);
 }
 
-function initBoxAnimation(box) {
-    let animationStart = performance.now();
-    let requestId = requestAnimationFrame(function animate(time) {
-        if ( time > animationStart + 2 ) {
-            let x = parseInt(box.style.left) - 1;
-            box.style.left = `${x}px`;
-            if (x < fieldSizes.width/2 + ball.width/2 && x > fieldSizes.width/2 - ball.width/2 - box.clientWidth) {
-                box.style.background = "orange";
-            } else {
-                box.style.background = "";
-            }
-            if (x <= -50) {
-                cancelAnimationFrame(requestId);
-                box.remove();
-                box = null;
-                return;
-            }
-            animationStart = time;
-        }   
-        requestId = requestAnimationFrame(animate);
-    });
-}
-
 let gap = getRandom(4000, 10000);
 
+const boxes = [];
+let initRequestId;
+let isLost = false;
+
 function initAppearingBoxes() {
-    initBox();
+    boxes.push(new Box());
     let animationStart = performance.now();
-    let requestId = requestAnimationFrame(function animate(time) {
+    let initRequestId = requestAnimationFrame(function animate(time) {
+        if (isLost) return;
         if ( time > animationStart + gap ) {
-            initBox();
-            gap = getRandom(4000, 10000)
+            boxes.push(new Box());
+            gap = getRandom(4000, 10000);
             animationStart = time;
         }   
-        requestId = requestAnimationFrame(animate);
+        initRequestId = requestAnimationFrame(animate);
     });
 }
 
@@ -87,4 +116,20 @@ document.addEventListener('keydown', function(evt) {
     }
 });
 
-initAppearingBoxes()
+initAppearingBoxes();
+
+function gameOver() {
+
+    boxes.forEach(box => cancelAnimationFrame(box.requestId));
+    cancelAnimationFrame(initRequestId);
+    isLost = true;
+
+    field.classList.add('lost');
+}
+
+const validate = (x, box) => {
+    return x < fieldSizes.width/2 + ball.width/2 
+    && x > fieldSizes.width/2 
+    && ball.top >= fieldSizes.height * 0.7 - box.height;
+}
+
