@@ -40,6 +40,32 @@ h1 {
     overflow: hidden;
 }
 
+.lost::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 0, 0, 0.5);
+    z-index: 2;
+}
+
+.lost::after {
+    content: 'GAME OVER';
+    width: 100%;
+    text-align: center;
+    font-family: "Press Start 2P";
+    font-size: 5rem;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    z-index: 3;
+}
+
+
+
 .ball {
     background-color: #ff0000;
     top: calc(70% - var(--ball-size));
