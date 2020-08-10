@@ -83,3 +83,20 @@ h1 {
     width: var(--ball-size);
     position: absolute;
 }
+
+.button {
+    margin: 3rem auto 0;
+    display: block;
+    cursor: pointer;
+    background-color: #006100;
+    padding: 0.8em 2em;
+    font-size: 1rem;
+    color: #fff;
+    border: 0;
+    border-radius: 5%;
+    text-transform: uppercase;
+}
+
+.button:hover {
+    opacity: 0.8;
+}

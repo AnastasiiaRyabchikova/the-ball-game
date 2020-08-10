@@ -1,5 +1,6 @@
 const field = document.querySelector('.game-field');
 const fieldSizes = {width: field.clientWidth, height: field.clientHeight};
+const button = document.querySelector('.button');
 
 class Ball {
     constructor(elem) {
@@ -14,6 +15,55 @@ class Ball {
 
     get top() {
         return this._top;
+    }
+
+    jump() {
+
+        // this.direction = "toTop";
+
+        // let animationStart = performance.now();
+        // let animationDuration;
+
+        // let gap = 1;
+
+        // const animate = (time) => {
+            // animationDuration = time - animationStart;
+
+            // if ( time > animationStart + gap ) {
+
+                // if ( this.top > fieldSizes.height * 0.7 - this.height * 3 && this.direction === "toTop") {
+
+                    // let x = this.top - 1;
+                    // this.top = x;
+                    // 
+                // } else if (this.top < fieldSizes.height * 0.7 - this.height) {
+                    // this.direction = "toBottom"
+                    // let x = this.top + 1;
+                    // this.top = x;
+                // } else {
+                    // cancelAnimationFrame(this.requestId);
+                    // this.direction = ""
+                    // return;
+                // }
+
+                // animationStart = time;
+            // }   
+
+            // this.requestId = requestAnimationFrame(animate);
+
+
+            let top = ball.top;
+            this.elem.style.transition = 'top 1.1s cubic-bezier(.18,.48,.33,1.01)';
+            this.top = top - this.height * 3;
+            this.elem.addEventListener('transitionend', (evt) => {
+                this.elem.style.transition = 'top 1.1s cubic-bezier(.65,.04,.79,.57)';
+                this.top = fieldSizes.height * 0.7 - this.height;
+            });
+    
+
+        // }
+
+        // this.requestId = requestAnimationFrame(animate);
     }
 }
 
@@ -39,8 +89,7 @@ class Box {
         const animate = (time) => {
             if ( time > animationStart + 2 ) {
                 let x = this.left - 1;
-                console.log(validate(x, this));
-                if ( validate(x, this) ) {
+                if ( validateGameLost(x, this) ) {
                     this.elem.style.background = "orange";
                     cancelAnimationFrame(this.requestId);
                     gameOver();
@@ -86,7 +135,7 @@ function getRandom(min, max) {
 
 let gap = getRandom(4000, 10000);
 
-const boxes = [];
+let boxes = [];
 let initRequestId;
 let isLost = false;
 
@@ -106,17 +155,9 @@ function initAppearingBoxes() {
 
 document.addEventListener('keydown', function(evt) {
     if (evt.keyCode === 38) {
-        let top = parseInt(ball.top);
-        ball.elem.style.transition = 'top 1.1s cubic-bezier(.18,.48,.33,1.01)';
-        ball.top = top - ball.height * 3;
-        ball.elem.addEventListener('transitionend', function(evt) {
-            ball.elem.style.transition = 'top 1.1s cubic-bezier(.65,.04,.79,.57)';
-            ball.top = fieldSizes.height * 0.7 - ball.height;
-        });
+        ball.jump();
     }
 });
-
-initAppearingBoxes();
 
 function gameOver() {
 
@@ -127,9 +168,23 @@ function gameOver() {
     field.classList.add('lost');
 }
 
-const validate = (x, box) => {
+const validateGameLost = (x, box) => {
     return x < fieldSizes.width/2 + ball.width/2 
-    && x > fieldSizes.width/2 
-    && ball.top >= fieldSizes.height * 0.7 - box.height;
+    && x > fieldSizes.width/2 - box.width
+    && ball.elem.offsetTop >= Math.floor(fieldSizes.height * 0.7 - box.height * 2 );
 }
 
+function startGame() {
+    if ( button.innerHTML === 'Start' ) button.innerHTML = 'Restart';
+    if ( field.classList.contains('lost') ) field.classList.remove('lost')
+    if (boxes.length) boxes.forEach(({elem}) => {
+        field.removeChild(elem);
+    });
+    boxes.length = 0;
+    initAppearingBoxes();
+
+}
+
+
+
+button.addEventListener('click', startGame);
