@@ -54,11 +54,12 @@ class Box {
         let animationStart = performance.now();
 
         const animate = (time) => {
+
             if ( time > animationStart + 2 ) {
                 let x = this.left - 1;
                 if ( game.validateGameLost(x, this) ) {
                     cancelAnimationFrame(this.requestId);
-                    game.gameOver();
+                    game.over();
                     return
                 } 
 
@@ -71,6 +72,7 @@ class Box {
                 }
                 animationStart = time;
             }   
+
             this.requestId = requestAnimationFrame(animate);
 
         }
@@ -107,7 +109,7 @@ class Game {
         });        
     }
 
-    gameOver() {
+    over() {
         this.boxes.forEach(box => cancelAnimationFrame(box.requestId));
         cancelAnimationFrame(this.initRequestId);
         this.isLost = true;
@@ -120,7 +122,7 @@ class Game {
         && this.ball.elem.offsetTop >= Math.floor(fieldSizes.height * 0.7 - box.height * 2 );
     }
     
-    startGame() {
+    start() {
         if ( button.innerHTML === 'Start' ) button.innerHTML = 'Restart';
         if ( field.classList.contains('lost') ) field.classList.remove('lost');
         if ( this.boxes.length ) this.boxes.forEach(({elem}) => field.removeChild(elem));
@@ -151,6 +153,4 @@ class Game {
 
 const game = new Game();
 
-
-
-button.addEventListener('click', () => game.startGame());
+button.addEventListener('click', () => game.start());
