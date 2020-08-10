@@ -57,13 +57,10 @@ class Box {
             if ( time > animationStart + 2 ) {
                 let x = this.left - 1;
                 if ( game.validateGameLost(x, this) ) {
-                    this.elem.style.background = "orange";
                     cancelAnimationFrame(this.requestId);
                     game.gameOver();
                     return
-                } else {
-                    this.elem.style.background = "";
-                }
+                } 
 
                 this.left = x;
 
