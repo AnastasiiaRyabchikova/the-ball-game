@@ -144,6 +144,7 @@ function initAppearingBoxes() {
     let animationStart = performance.now();
     let initRequestId = requestAnimationFrame(function animate(time) {
         if (isLost) return;
+
         if ( time > animationStart + gap ) {
             boxes.push(new Box());
             gap = getRandom(4000, 10000);
@@ -181,6 +182,7 @@ function startGame() {
         field.removeChild(elem);
     });
     boxes.length = 0;
+    isLost = false;
     initAppearingBoxes();
 
 }
